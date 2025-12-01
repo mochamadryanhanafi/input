@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DailyVerse Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#0f172a',
+                        glass: 'rgba(30, 41, 59, 0.7)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #020617; background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%); background-attachment: fixed; }
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .status-filled { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); border: none; }
+        .status-empty { background: rgba(51, 65, 85, 0.5); color: #94a3b8; border: 1px solid rgba(71, 85, 105, 0.5); }
+        .status-disabled { background: rgba(2, 6, 23, 0.5); opacity: 0.3; cursor: not-allowed; }
+    </style>
+</head>
+<body class="text-slate-200 font-sans min-h-screen">
+
+    <nav class="fixed top-0 w-full z-50 glass-panel border-b-0 border-b-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                    <span class="font-mono font-bold text-xl tracking-tighter text-white">DAILY<span class="text-emerald-400">VERSE</span></span>
+                </div>
+                <div class="text-xs font-mono text-slate-400 bg-slate-800/50 px-3 py-1 rounded-full border border-slate-700">
+                    Sistem: <span class="text-emerald-400">ONLINE</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <div class="lg:col-span-1 order-2 lg:order-1">
+            <div class="glass-panel rounded-2xl p-6 sticky top-24">
+                <h2 class="text-lg font-bold text-white mb-6 flex items-center gap-2 border-b border-white/10 pb-4">
+                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    Input Data Baru
+                </h2>
+                
+                <form action="/submit" method="POST" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-mono text-slate-400 uppercase">Portal Prioritas</label>
+                            <div class="relative">
+                                <select name="portal" required class="w-full mt-1 bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition appearance-none cursor-pointer">
+                                    <option value="" disabled>-- Pilih Sumber --</option>
+                                    
+                                    <option value="Kompas.com" selected>Kompas</option>
+                                    
+                                    <option value="Tempo.co">Tempo</option>
+                                    
+                                    <option value="Antara News">Republika</option>
+                                    
+                                    <option value="Detik.com">Detik</option>
+                                    
+                                    <option value="Tirto.id">Liputan 6</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400 top-1">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-mono text-emerald-400 uppercase flex justify-between">
+                                Target Tanggal
+                                <span class="text-[10px] lowercase opacity-70">*auto-fill empty slot</span>
+                            </label>
+                            <input type="date" name="date_published" 
+                                value="{{ suggested_date }}" 
+                                required 
+                                class="w-full mt-1 bg-slate-900/50 border border-emerald-500/50 rounded-lg px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition text-emerald-100 font-bold shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-mono text-slate-400 uppercase">URL Asli</label>
+                        <input type="url" name="url" placeholder="https://..." required class="w-full mt-1 bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition">
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-mono text-slate-400 uppercase">Judul Berita</label>
+                        <input type="text" name="title" required class="w-full mt-1 bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition font-semibold text-white">
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-mono text-slate-400 uppercase">Konten Lengkap</label>
+                        <textarea name="content" rows="5" required class="w-full mt-1 bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition"></textarea>
+                    </div>
+
+                    <div class="pt-4 border-t border-white/5 grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="text-xs font-mono text-yellow-500/80 uppercase">Sentimen (Opsional)</label>
+                            <select name="sentiment" class="w-full mt-1 bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-yellow-500 outline-none">
+                                <option value="">-- Pilih --</option>
+                                <option value="Positif">Positif</option>
+                                <option value="Netral">Netral</option>
+                                <option value="Negatif">Negatif</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-mono text-yellow-500/80 uppercase">Ringkasan ROUGE (Opsional)</label>
+                            <textarea name="summary" rows="2" placeholder="Isi hanya jika sampel test..." class="w-full mt-1 bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-yellow-500 outline-none"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg shadow-blue-900/20 transition-all active:scale-95 mt-2">
+                        SIMPAN DATA
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="lg:col-span-2 order-1 lg:order-2">
+            <div class="glass-panel rounded-2xl p-6">
+                <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        Peta Kelengkapan Data (2014-2024)
+                    </h2>
+                    <div class="flex gap-3 text-[10px] font-mono uppercase">
+                        <span class="flex items-center gap-1 text-slate-400"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Ada Data</span>
+                        <span class="flex items-center gap-1 text-slate-400"><span class="w-2 h-2 rounded-full bg-slate-600 border border-slate-500"></span>Kosong</span>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    {% for year in timeline %}
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-2 hover:bg-white/5 rounded-lg transition-colors group">
+                        <div class="w-16 font-mono font-bold text-slate-500 group-hover:text-white transition-colors text-sm">{{ year.year }}</div>
+                        
+                        <div class="flex-1 grid grid-cols-6 sm:grid-cols-12 gap-1.5">
+                            {% for m in year.months %}
+                            <div class="relative group/month">
+                                <div class="h-8 rounded flex items-center justify-center text-[10px] font-bold transition-all duration-300
+                                    {{ 'status-filled' if m.status == 'filled' else 'status-empty' if m.status == 'empty' else 'status-disabled' }}">
+                                    {% if m.status != 'disabled' %}
+                                        {{ m.count if m.count > 0 else '' }}
+                                    {% endif %}
+                                </div>
+                                
+                                {% if m.status != 'disabled' %}
+                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/month:block z-10 w-max">
+                                    <div class="bg-black text-white text-xs px-2 py-1 rounded border border-slate-700 shadow-xl">
+                                        {{ m.name }} {{ year.year }}: {{ m.count }} Berita
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

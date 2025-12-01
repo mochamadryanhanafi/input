@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment & Secrets (WAJIB)
+.env
+venv/
+env/
+
+# Editor
+.vscode/
+.idea/
+
+# Windows System Garbage
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
