@@ -28,6 +28,10 @@
         .status-filled { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); border: none; }
         .status-empty { background: rgba(51, 65, 85, 0.5); color: #94a3b8; border: 1px solid rgba(71, 85, 105, 0.5); }
         .status-disabled { background: rgba(2, 6, 23, 0.5); opacity: 0.3; cursor: not-allowed; }
+        
+        /* Tooltip Animation */
+        .tooltip-content { visibility: hidden; opacity: 0; transition: opacity 0.2s, visibility 0.2s; position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); z-index: 50; width: max-content; }
+        .group\/month:hover .tooltip-content { visibility: visible; opacity: 1; }
     </style>
 </head>
 <body class="text-slate-200 font-sans min-h-screen">
@@ -61,17 +65,12 @@
                             <label class="text-xs font-mono text-slate-400 uppercase">Portal Prioritas</label>
                             <div class="relative">
                                 <select name="portal" required class="w-full mt-1 bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition appearance-none cursor-pointer">
-                                    <option value="" disabled>-- Pilih Sumber --</option>
-                                    
-                                    <option value="Kompas.com" selected>Kompas</option>
-                                    
-                                    <option value="Tempo.co">Tempo</option>
-                                    
-                                    <option value="Antara News">Republika</option>
-                                    
-                                    <option value="Detik.com">Detik</option>
-                                    
-                                    <option value="Tirto.id">Liputan 6</option>
+                                    <option value="" disabled>-- Pilih --</option>
+                                    <option value="Kompas" selected>Kompas</option>
+                                    <option value="Tempo">Tempo</option>
+                                    <option value="Liputan6">Liputan6</option>
+                                    <option value="Detik">Detik</option>
+                                    <option value="Republika">Republika</option>
                                 </select>
                                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400 top-1">
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -82,12 +81,8 @@
                         <div>
                             <label class="text-xs font-mono text-emerald-400 uppercase flex justify-between">
                                 Target Tanggal
-                                <span class="text-[10px] lowercase opacity-70">*auto-fill empty slot</span>
                             </label>
-                            <input type="date" name="date_published" 
-                                value="{{ suggested_date }}" 
-                                required 
-                                class="w-full mt-1 bg-slate-900/50 border border-emerald-500/50 rounded-lg px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition text-emerald-100 font-bold shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                            <input type="date" name="date_published" value="{{ suggested_date }}" required class="w-full mt-1 bg-slate-900/50 border border-emerald-500/50 rounded-lg px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition text-emerald-100 font-bold shadow-[0_0_10px_rgba(16,185,129,0.1)]">
                         </div>
                     </div>
 
@@ -116,6 +111,7 @@
                                 <option value="Negatif">Negatif</option>
                             </select>
                         </div>
+                        
                         <div>
                             <label class="text-xs font-mono text-yellow-500/80 uppercase">Ringkasan ROUGE (Opsional)</label>
                             <textarea name="summary" rows="2" placeholder="Isi hanya jika sampel test..." class="w-full mt-1 bg-slate-900/50 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:border-yellow-500 outline-none"></textarea>
@@ -129,12 +125,41 @@
             </div>
         </div>
 
-        <div class="lg:col-span-2 order-1 lg:order-2">
+        <div class="lg:col-span-2 order-1 lg:order-2 space-y-8">
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                
+                <div class="glass-panel p-4 rounded-xl border-l-4 border-l-purple-500 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 opacity-10 transform translate-x-2 -translate-y-2">
+                        <svg class="w-16 h-16 text-purple-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
+                    </div>
+                    <p class="text-xs text-slate-400 uppercase font-mono mb-1">Progress Hari Ini</p>
+                    <p class="text-3xl font-bold text-white">{{ today_count }}</p>
+                </div>
+
+                <div class="glass-panel p-4 rounded-xl border-l-4 border-l-blue-500 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 opacity-10 transform translate-x-2 -translate-y-2">
+                        <svg class="w-16 h-16 text-blue-500" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path></svg>
+                    </div>
+                    <p class="text-xs text-slate-400 uppercase font-mono mb-1">Total Dataset</p>
+                    <p class="text-3xl font-bold text-white">{{ total_news }}</p>
+                </div>
+
+                {% for portal, count in category_stats.items() %}
+                {% if loop.index <= 2 %}
+                <div class="glass-panel p-4 rounded-xl border-l-4 border-l-emerald-500/50">
+                    <p class="text-xs text-slate-400 uppercase font-mono mb-1 truncate">{{ portal }}</p>
+                    <p class="text-xl font-bold text-emerald-400">{{ count }}</p>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+
             <div class="glass-panel rounded-2xl p-6">
                 <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
                     <h2 class="text-lg font-bold text-white flex items-center gap-2">
                         <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                        Peta Kelengkapan Data (2014-2024)
+                        Timeline Distribusi Data
                     </h2>
                     <div class="flex gap-3 text-[10px] font-mono uppercase">
                         <span class="flex items-center gap-1 text-slate-400"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Ada Data</span>
@@ -142,7 +167,7 @@
                     </div>
                 </div>
 
-                <div class="space-y-3">
+                <div class="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                     {% for year in timeline %}
                     <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 p-2 hover:bg-white/5 rounded-lg transition-colors group">
                         <div class="w-16 font-mono font-bold text-slate-500 group-hover:text-white transition-colors text-sm">{{ year.year }}</div>
@@ -150,7 +175,7 @@
                         <div class="flex-1 grid grid-cols-6 sm:grid-cols-12 gap-1.5">
                             {% for m in year.months %}
                             <div class="relative group/month">
-                                <div class="h-8 rounded flex items-center justify-center text-[10px] font-bold transition-all duration-300
+                                <div class="h-8 rounded flex items-center justify-center text-[10px] font-bold transition-all duration-300 cursor-default
                                     {{ 'status-filled' if m.status == 'filled' else 'status-empty' if m.status == 'empty' else 'status-disabled' }}">
                                     {% if m.status != 'disabled' %}
                                         {{ m.count if m.count > 0 else '' }}
@@ -158,10 +183,18 @@
                                 </div>
                                 
                                 {% if m.status != 'disabled' %}
-                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover/month:block z-10 w-max">
-                                    <div class="bg-black text-white text-xs px-2 py-1 rounded border border-slate-700 shadow-xl">
-                                        {{ m.name }} {{ year.year }}: {{ m.count }} Berita
+                                <div class="tooltip-content pointer-events-none">
+                                    <div class="bg-slate-900 text-slate-200 text-xs p-3 rounded-lg border border-slate-700 shadow-2xl backdrop-blur-md">
+                                        <div class="font-bold text-white border-b border-slate-700 pb-1 mb-1">{{ m.name }} {{ year.year }}</div>
+                                        <div class="space-y-1 font-mono">
+                                            {% if m.count > 0 %}
+                                                <span class="block whitespace-nowrap">{{ m.details | safe }}</span>
+                                            {% else %}
+                                                <span class="text-slate-500 italic">Belum ada data</span>
+                                            {% endif %}
+                                        </div>
                                     </div>
+                                    <div class="w-3 h-3 bg-slate-900 border-r border-b border-slate-700 transform rotate-45 absolute -bottom-1.5 left-1/2 -translate-x-1/2"></div>
                                 </div>
                                 {% endif %}
                             </div>

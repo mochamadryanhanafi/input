@@ -11,12 +11,15 @@ templates = Jinja2Templates(directory="templates")
 @router.get("/")
 async def index(request: Request):
     service = StatsService()
-    timeline, suggested_date = await service.get_dashboard_data()
+    data = await service.get_dashboard_data() 
     
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "timeline": timeline,
-        "suggested_date": suggested_date  
+        "timeline": data["timeline"],
+        "suggested_date": data["suggested_date"],
+        "total_news": data["total_news"],
+        "category_stats": data["category_stats"],
+        "today_count": data["today_count"]
     })
 
 @router.post("/submit")
